@@ -1,23 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import ChatBox from "./ChatBox";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
+import "./style.css";
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const [chats, setChats] = useState([
+    {
+      id: 1,
+      title: "New Chat",
+      messages: []
+    }
+  ]);
+
+  const [activeChatId, setActiveChatId] = useState(1);
+
+  /* ================= TOGGLE SIDEBAR ================= */
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
+  /* ================= CREATE NEW CHAT ================= */
+  const createNewChat = () => {
+    const newChat = {
+      id: Date.now(),
+      title: "New Chat",
+      messages: []
+    };
+
+    setChats(prev => [newChat, ...prev]);
+    setActiveChatId(newChat.id);
+  };
+
+  /* ================= ACTIVE CHAT ================= */
+  const activeChat = chats.find(c => c.id === activeChatId);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+
+      <Sidebar
+        sidebarOpen={sidebarOpen}
+        chats={chats}
+        activeChatId={activeChatId}
+        setActiveChatId={setActiveChatId}
+        setChats={setChats}  
+        createNewChat={createNewChat}
+        userName="Rajan"
+      />
+
+      <div className="main-content">
+
+        <Header toggleSidebar={toggleSidebar} />
+
+        <ChatBox
+          chat={activeChat}
+          chats={chats}
+          setChats={setChats}
+        />
+
+      </div>
+
     </div>
   );
 }
